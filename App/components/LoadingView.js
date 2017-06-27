@@ -1,3 +1,10 @@
+/**
+ * EveInsta
+ * https://github.com/BVPMOSC/Eveinsta
+ * created by BVPMOSC
+ */
+
+
 //import liraries
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
@@ -25,7 +32,7 @@ const styles = StyleSheet.create({
         fontSize: 55,
         fontFamily:'Roboto',
         fontWeight:'bold',
-        color:'black'
+        color:'tomato'
     }
 });
 
