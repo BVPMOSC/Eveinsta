@@ -4,10 +4,19 @@
  * created by BVPMOSC
  */
 
-import { LayoutAnimation, Animated, Dimensions, Text, View, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { LayoutAnimation,
+   Animated,
+   Dimensions, 
+   Text, View,
+   StyleSheet,
+   ScrollView,
+   Image,
+   TouchableOpacity } from 'react-native';
+
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
 import Config from './config'
+import LoadingView from './components/LoadingView'
 
 var { height, width } = Dimensions.get('window');
 var firebaseApp;
@@ -121,11 +130,7 @@ export default class App extends Component {
   }
   renderLoadingView() {
     return (
-      <View style={styles.container}>
-        <Text>
-          Loading...
-        </Text>
-      </View>
+      <LoadingView />
     );
   }
 
