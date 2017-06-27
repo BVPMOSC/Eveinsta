@@ -4,14 +4,19 @@
  * created by BVPMOSC
  */
 
-import { LayoutAnimation, Animated, Dimensions, Text, View, StyleSheet, ScrollView, Image } from 'react-native';
+import { LayoutAnimation, Animated, Dimensions, Text, View, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
 import React, { Component } from 'react';
-var {height, width} = Dimensions.get('window');
-
+import * as firebase from 'firebase';
+import Config from './config'
+var { height, width } = Dimensions.get('window');
+var firebaseApp;
+if (!firebase.apps.length) {
+  firebaseApp = firebase.initializeApp(Config);
+}
 const smallSize = width / 5;
 const itemWidth = width * .67;
-const itemHeight = height / 2 ;
-const fontSize=  300;
+const itemHeight = height / 2;
+const fontSize = 300;
 
 const COLORS = ['coral', 'mediumturquoise', 'palevioletred', 'papayawhip', 'tomato']
 const ITEMS = [
@@ -29,8 +34,8 @@ const SMALL_ITEMS = [
   'https://s-media-cache-ak0.pinimg.com/236x/f1/1c/26/f11c26247021daeac5ec8c3aba1792d1.jpg',
   'https://s-media-cache-ak0.pinimg.com/236x/fa/5c/a9/fa5ca9074f962ef824e513aac4d59f1f.jpg',
   'https://s-media-cache-ak0.pinimg.com/236x/95/bb/e4/95bbe482ca9744ea71f68321ec4260a2.jpg',
-  'https://s-media-cache-ak0.pinimg.com/564x/54/7d/13/547d1303000793176aca26505312089c.jpg',
-  ''
+  'https://s-media-cache-ak0.pinimg.com/564x/54/7d/13/547d1303000793176aca26505312089c.jpg'
+
 ]
 
 
@@ -42,6 +47,19 @@ export default class App extends Component {
       scrollX: new Animated.Value(0),
       indicator: new Animated.Value(1)
     }
+    this.itemsRef = firebaseApp.database().ref('/events');
+    this.addEventToFirebase = this.addEventToFirebase.bind(this);
+  }
+  addEventToFirebase() {
+    var data = {
+      name: "App-fest",
+      description: " firebase Event",
+      Soceity: "mosc",
+      Image_url: "https://s-media-cache-ak0.pinimg.com/564x/54/7d/13/547d1303000793176aca26505312089c.jpg"
+    }
+
+    this.itemsRef.push(data);
+    console.log("pushed")
   }
 
   componentDidMount() {
@@ -52,19 +70,18 @@ export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-
-        <View style={{height: 20 + height / 2}}>
-          <Text style={[styles.heading, {fontSize: 28}]}>Societies</Text>
+        <View style={{ height: 20 + height / 2 }}>
+          <Text style={[styles.heading, { fontSize: 28 }]}>Societies</Text>
           {this.renderScroll()}
         </View>
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           <Text style={styles.heading}>Upcoming Events</Text>
-          <ScrollView contentContainerStyle={{alignItems: 'flex-start'}} style={{paddingHorizontal: 10, flex: 1, width: width}}>
-            {SMALL_ITEMS.map((image,i) => {
+          <ScrollView contentContainerStyle={{ alignItems: 'flex-start' }} style={{ paddingHorizontal: 10, flex: 1, width: width }}>
+            {SMALL_ITEMS.map((image, i) => {
               return this.renderNormal(image, i)
             })}
           </ScrollView>
-          </View>
+        </View>
       </View>
     );
   }
@@ -72,8 +89,8 @@ export default class App extends Component {
   renderScroll() {
     return <Animated.ScrollView
       horizontal={true}
-      style={{flex: 1}}
-      contentContainerStyle={{alignItems: 'center', flexGrow: 1}}
+      style={{ flex: 1 }}
+      contentContainerStyle={{ alignItems: 'center', flexGrow: 1 }}
       decelerationRate={0}
       snapToInterval={itemWidth}
       scrollEventThrottle={16}
@@ -83,7 +100,7 @@ export default class App extends Component {
         [{ nativeEvent: { contentOffset: { x: this.state.scrollX } } }]
       )}
     >
-      {ITEMS.map((image,i) => {
+      {ITEMS.map((image, i) => {
         return this.renderRow(image, i)
       })}
     </Animated.ScrollView>
@@ -91,17 +108,20 @@ export default class App extends Component {
 
 
   renderNormal(image, i) {
-    if (image === '' ) {
+    if (image === '') {
       return null
     }
 
-    return <View key={i}  style={{flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'center', marginBottom: 20}}>
-        <Image source={{uri: image}} style={[{height: smallSize, width: smallSize, opacity: 1, resizeMode: 'cover'}]} />
-        <View style={{marginLeft: 20}}>
-          <Text style={{fontWeight: '600', fontSize: 16}}>Words of wisdom</Text>
-          <Text style={{fontWeight: '300', fontSize: 12}}>We live in a world of deadlines</Text>
+    return <View key={i} style={{ flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'center', marginBottom: 20 }} >
+      <TouchableOpacity onPress={this.addEventToFirebase} style={{ flexDirection: 'row', flex: 1, alignItems: 'center' }}>
+        <Image source={{ uri: image }} style={[{ height: smallSize, width: smallSize, opacity: 1, resizeMode: 'cover' }]} />
+        <View style={{ marginLeft: 20 }}>
+          <Text style={{ fontWeight: '600', fontSize: 16 }}>Words of wisdom</Text>
+          <Text style={{ fontWeight: '300', fontSize: 12 }}>We live in a world of deadlines</Text>
         </View>
-      </View>
+      </TouchableOpacity>
+    </View>
+
   }
 
   renderRow(image, i) {
@@ -110,7 +130,7 @@ export default class App extends Component {
 
     // Ensure that we're leaving space for latest item.
     if (image === '') {
-      return <View key={i} style={[styles.emptyItem, {width: width * .33}]}></View>
+      return <View key={i} style={[styles.emptyItem, { width: width * .33 }]}></View>
     }
 
     return (
@@ -124,9 +144,13 @@ export default class App extends Component {
           outputRange: [itemHeight * .8, itemHeight, itemHeight],
         })
       }]}>
-        <Image key={i} source={{uri: image}} style={[StyleSheet.AbsoluteFill, {height: itemHeight, width: itemWidth, opacity: 1, resizeMode: 'cover'}]}>
-        <View style={[StyleSheet.AbsoluteFill, {opacity: 0.4, backgroundColor: COLORS[i], width: itemWidth, height: itemHeight}]}></View>
-        <Animated.View
+        <Image
+          key={i}
+          source={{ uri: image }}
+
+          style={[StyleSheet.AbsoluteFill, { height: itemHeight, width: itemWidth, opacity: 1, resizeMode: 'cover' }]}>
+          <View style={[StyleSheet.AbsoluteFill, { opacity: 0.4, backgroundColor: COLORS[i], width: itemWidth, height: itemHeight }]}></View>
+          <Animated.View
             style={[{
               width: itemWidth,
               alignItems: 'flex-end',
@@ -136,7 +160,7 @@ export default class App extends Component {
               height: itemHeight,
               opacity: this.state.scrollX.interpolate({
                 inputRange,
-                outputRange: [0.4,1, 1, 1]
+                outputRange: [0.4, 1, 1, 1]
               }),
               transform: [{
                 scale: this.state.scrollX.interpolate({
@@ -145,11 +169,11 @@ export default class App extends Component {
                 })
               }]
             }]}>
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', width: itemWidth, height: itemHeight, position: 'absolute', bottom: -itemHeight / 4, right: -itemWidth / 4}}>
-              <Text style={{fontSize: fontSize,color: 'rgba(0,0,0,0.4)'}}>{i + 1}</Text>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', width: itemWidth, height: itemHeight, position: 'absolute', bottom: -itemHeight / 4, right: -itemWidth / 4 }}>
+              <Text style={{ fontSize: fontSize, color: 'rgba(0,0,0,0.4)' }}>{i + 1}</Text>
             </View>
           </Animated.View>
-          </Image>
+        </Image>
       </Animated.View>
     );
   }
