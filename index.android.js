@@ -1,7 +1,7 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
+ * EveInsta
+ * https://github.com/BVPMOSC/Eveinsta
+ * created by BVPMOSC
  */
 
 import React, { Component } from 'react';

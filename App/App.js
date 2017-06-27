@@ -1,3 +1,9 @@
+/**
+ * EveInsta
+ * https://github.com/BVPMOSC/Eveinsta
+ * created by BVPMOSC
+ */
+
 import { LayoutAnimation, Animated, Dimensions, Text, View, StyleSheet, ScrollView, Image } from 'react-native';
 import React, { Component } from 'react';
 var {height, width} = Dimensions.get('window');
