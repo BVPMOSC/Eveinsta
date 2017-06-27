@@ -8,25 +8,19 @@ import { LayoutAnimation, Animated, Dimensions, Text, View, StyleSheet, ScrollVi
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
 import Config from './config'
+
 var { height, width } = Dimensions.get('window');
 var firebaseApp;
+
 if (!firebase.apps.length) {
   firebaseApp = firebase.initializeApp(Config);
 }
+
 const smallSize = width / 5;
 const itemWidth = width * .67;
 const itemHeight = height / 2;
 const fontSize = 300;
 
-const COLORS = ['coral', 'mediumturquoise', 'palevioletred', 'papayawhip', 'tomato']
-const ITEMS = [
-  'https://s-media-cache-ak0.pinimg.com/564x/1d/00/9d/1d009d53dd993bd0a604397e65bbde6d.jpg',
-  'https://s-media-cache-ak0.pinimg.com/564x/53/9d/bb/539dbb7cc07c677925627c6e91585ef5.jpg',
-  'https://s-media-cache-ak0.pinimg.com/564x/3d/0b/a6/3d0ba6600a33f3e4b3bac737e024d720.jpg',
-  'https://s-media-cache-ak0.pinimg.com/564x/d9/b8/27/d9b8276db7cd24443bc4a937f853914b.jpg',
-  'https://s-media-cache-ak0.pinimg.com/564x/75/eb/53/75eb53941897f231cd0b55f25806d887.jpg',
-  ''
-]
 
 const SMALL_ITEMS = [
   'https://s-media-cache-ak0.pinimg.com/564x/e3/44/6f/e3446f61632a9381c96362b45749c5f6.jpg',
@@ -38,17 +32,37 @@ const SMALL_ITEMS = [
 
 ]
 
-
 export default class App extends Component {
   constructor(props) {
     super(props)
-
     this.state = {
       scrollX: new Animated.Value(0),
-      indicator: new Animated.Value(1)
+      indicator: new Animated.Value(1),
+      socities: [],
+      loaded: false
     }
     this.itemsRef = firebaseApp.database().ref('/events');
     this.addEventToFirebase = this.addEventToFirebase.bind(this);
+    this.refState = this.refState.bind(this)
+
+
+    /**
+     * this was to upload Socites Details
+     */
+
+    // var SociteiesRef = firebaseApp.database().ref('/socities');
+    // ITEMS.forEach(function(item,i){
+    //   var data = {};
+    //   data['props'] = {
+    //     name:SOCITIES_names[i],
+    //     back_url:item,
+    //     color:COLORS[i]
+    //   };
+    //   SociteiesRef.push(data);
+    //   console.log("pushed");
+    // })
+
+
   }
   addEventToFirebase() {
     var data = {
@@ -59,15 +73,47 @@ export default class App extends Component {
     }
 
     this.itemsRef.push(data);
-    console.log("pushed")
+    console.log("pushed");
   }
+
 
   componentDidMount() {
     LayoutAnimation.spring()
+
+    /**
+     * Fetch Data for Socities
+     */
+    socitesRef = firebaseApp.database().ref('/socities');
+    var socitiesarr = [];
+    var context = this;
+    socitesRef.on("value", function (snapshot) {
+      snapshot.forEach(function (snap) {
+        socitiesarr.push(snap.val())
+      });
+      context.refState(socitiesarr);
+      
+
+    }, function (errorObject) {
+      console.log("The read failed: " + errorObject.code);
+    })
+
+
+
+
+  }
+  refState(socitiesarr) {
+    this.setState({
+      socities: socitiesarr,
+      loaded: true
+    });
   }
 
 
   render() {
+    console.log(this.state.loaded);
+    if (!this.state.loaded) {
+      return this.renderLoadingView();
+    }
     return (
       <View style={styles.container}>
         <View style={{ height: 20 + height / 2 }}>
@@ -82,6 +128,15 @@ export default class App extends Component {
             })}
           </ScrollView>
         </View>
+      </View>
+    );
+  }
+  renderLoadingView() {
+    return (
+      <View style={styles.container}>
+        <Text>
+          Loading...
+        </Text>
       </View>
     );
   }
@@ -100,8 +155,8 @@ export default class App extends Component {
         [{ nativeEvent: { contentOffset: { x: this.state.scrollX } } }]
       )}
     >
-      {ITEMS.map((image, i) => {
-        return this.renderRow(image, i)
+      {this.state.socities.map((obj, i) => {
+        return this.renderRow(obj.props.back_url, i, obj.props.color)
       })}
     </Animated.ScrollView>
   }
@@ -124,7 +179,7 @@ export default class App extends Component {
 
   }
 
-  renderRow(image, i) {
+  renderRow(image, i, color) {
     let inputRange = [(i - 1) * itemWidth, i * itemWidth, (i + 1) * itemWidth, (i + 2) * itemWidth];
     let secondRange = [(i - 1) * itemWidth, i * itemWidth, (i + 1) * itemWidth]
 
@@ -149,7 +204,7 @@ export default class App extends Component {
           source={{ uri: image }}
 
           style={[StyleSheet.AbsoluteFill, { height: itemHeight, width: itemWidth, opacity: 1, resizeMode: 'cover' }]}>
-          <View style={[StyleSheet.AbsoluteFill, { opacity: 0.4, backgroundColor: COLORS[i], width: itemWidth, height: itemHeight }]}></View>
+          <View style={[StyleSheet.AbsoluteFill, { opacity: 0.4, backgroundColor: color, width: itemWidth, height: itemHeight }]}></View>
           <Animated.View
             style={[{
               width: itemWidth,
