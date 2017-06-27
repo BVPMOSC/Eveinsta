@@ -46,23 +46,6 @@ export default class App extends Component {
     this.refState = this.refState.bind(this)
 
 
-    /**
-     * this was to upload Socites Details
-     */
-
-    // var SociteiesRef = firebaseApp.database().ref('/socities');
-    // ITEMS.forEach(function(item,i){
-    //   var data = {};
-    //   data['props'] = {
-    //     name:SOCITIES_names[i],
-    //     back_url:item,
-    //     color:COLORS[i]
-    //   };
-    //   SociteiesRef.push(data);
-    //   console.log("pushed");
-    // })
-
-
   }
   addEventToFirebase() {
     var data = {
@@ -101,6 +84,11 @@ export default class App extends Component {
 
 
   }
+  /**
+   * 
+   * @param {*} socitiesarr
+   * Refreshes Current State when Data is Loaded
+   */
   refState(socitiesarr) {
     this.setState({
       socities: socitiesarr,
