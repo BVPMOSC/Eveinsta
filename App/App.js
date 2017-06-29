@@ -4,14 +4,17 @@
  * created by BVPMOSC
  */
 
-import { LayoutAnimation,
-   Animated,
-   Dimensions, 
-   Text, View,
-   StyleSheet,
-   ScrollView,
-   Image,
-   TouchableOpacity } from 'react-native';
+import {
+  LayoutAnimation,
+  Animated,
+  Dimensions,
+  Text, View,
+  StyleSheet,
+  ScrollView,
+  Image,
+  Button,
+  TouchableOpacity
+} from 'react-native';
 
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
@@ -83,7 +86,7 @@ export default class App extends Component {
         socitiesarr.push(snap.val())
       });
       context.refState(socitiesarr);
-      
+
 
     }, function (errorObject) {
       console.log("The read failed: " + errorObject.code);
@@ -104,8 +107,6 @@ export default class App extends Component {
       loaded: true
     });
   }
-
-
   render() {
     console.log(this.state.loaded);
     if (!this.state.loaded) {
@@ -114,8 +115,23 @@ export default class App extends Component {
     return (
       <View style={styles.container}>
         <View style={{ height: 20 + height / 2 }}>
-          <Text style={[styles.heading, { fontSize: 28 }]}>Societies</Text>
+        <View style={styles.heading}> 
+          <Text style={{ fontSize: 28,flex:5}}>Societies</Text>
+            <Button
+            style={{
+              flex:1,
+              backgroundColor:'red',
+              color:"#000",
+              fontSize: 24
+            }}
+            title="Add"
+            onPress={() =>this.props.nav('AddScreen')}
+            >
+             </Button>
+            </View>
+         
           {this.renderScroll()}
+        
         </View>
         <View style={{ flex: 1 }}>
           <Text style={styles.heading}>Upcoming Events</Text>
@@ -248,8 +264,11 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 22,
     fontWeight: '300',
+    flexDirection:'row',
     alignSelf: 'flex-start',
     paddingHorizontal: 10,
-    paddingVertical: 10,
+    paddingVertical: 0,
+    marginBottom:10,
+
   }
 });

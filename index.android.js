@@ -9,15 +9,20 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  Button
 } from 'react-native';
 import App from './App/App'
+import { StackNavigator } from 'react-navigation';
+import AddScreen from './App/Add'
 
-export default class Eveinsta extends Component {
+class Eveinsta extends Component {
+
+
   render() {
-    return (
-     <App />
-    );
+     const { navigate } = this.props.navigation;
+    return (<App nav={navigate}/>);
+
   }
 }
 
@@ -39,5 +44,10 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+const SimpleApp = StackNavigator({ Home: { screen: Eveinsta,navigationOptions: { header: null } }, AddScreen: { screen: AddScreen }},
+ {
+  initialRouteName: 'Home',
 
-AppRegistry.registerComponent('Eveinsta', () => Eveinsta);
+});
+
+AppRegistry.registerComponent('Eveinsta', () => SimpleApp);
