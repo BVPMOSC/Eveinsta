@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component } from 'react';
-import { View, Text, StyleSheet ,Button} from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { Kohana } from 'react-native-textinput-effects';
 
@@ -27,7 +27,7 @@ class AddScreen extends Component {
                         style={{ backgroundColor: '#F8F8F8' }}
                         label={'Event Name'}
                         iconClass={FontAwesomeIcon}
-                        iconName={'bus'}
+                        iconName={'id-badge'}
                         iconColor={'#625864'}
                         labelStyle={{ color: '#292931' }}
                         inputStyle={{ color: '#292931' }}
@@ -46,7 +46,7 @@ class AddScreen extends Component {
                         style={[styles.input, { backgroundColor: '#F8F8F8' }]}
                         label={'Place and Timmings'}
                         iconClass={FontAwesomeIcon}
-                        iconName={'phone'}
+                        iconName={'building'}
                         iconColor={'#ddd'}
                         iconColor={'#625864'}
                         labelStyle={{ color: '#292931' }}
@@ -56,7 +56,7 @@ class AddScreen extends Component {
                         style={[styles.input, { backgroundColor: '#F8F8F8' }]}
                         label={'Url for registration'}
                         iconClass={FontAwesomeIcon}
-                        iconName={'phone'}
+                        iconName={'link'}
                         iconColor={'#ddd'}
                         iconColor={'#625864'}
                         labelStyle={{ color: '#292931' }}
@@ -66,20 +66,19 @@ class AddScreen extends Component {
                         style={[styles.input, { backgroundColor: '#F8F8F8' }]}
                         label={'Photo url'}
                         iconClass={FontAwesomeIcon}
-                        iconName={'phone'}
+                        iconName={'link'}
                         iconColor={'#ddd'}
                         iconColor={'#625864'}
                         labelStyle={{ color: '#292931' }}
                         inputStyle={{ color: '#292931' }}
                     />
                 </View>
-               
+
                 <Button
-                   
-                        title="Add"
-                        color="#841584"
-                        accessibilityLabel="Learn more about this purple button"
-                    />
+                    title="Add"
+                    color="#841584"
+                    accessibilityLabel="send notification"
+                />
             </View>
 
 
