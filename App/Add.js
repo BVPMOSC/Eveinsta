@@ -1,6 +1,6 @@
 //import liraries
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Button,ToastAndroid } from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { Kohana } from 'react-native-textinput-effects';
 import * as firebase from 'firebase';
@@ -9,8 +9,7 @@ var firebaseApp;
 var itemRef;
 
   if (!firebase.apps.length) {
-           firebase.initializeApp(Config);
-           
+        firebase.initializeApp(Config);
   }
 
 // create a component
@@ -22,8 +21,6 @@ class AddScreen extends Component {
             Ename: '', Edisp: '', EpAndt: '',
             EregistrationUrl: '', EphotoUrl: ''
         };
-      
-        
         this.PushTOFirebase = this.PushTOFirebase.bind(this);
 
     }
@@ -38,7 +35,7 @@ class AddScreen extends Component {
        firebase.database().ref('/events').push(this.state);
         this.setState({Ename: '', Edisp: '', EpAndt: '',
             EregistrationUrl: '', EphotoUrl: ''});
-        console.log("pushed");
+       ToastAndroid.show('Pushed To server!', ToastAndroid.SHORT);
     }
 
     render() {
